@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+  <section class="grid md:grid-cols-2 gap-6 items-start">
+    <div class="bg-white rounded-2xl p-6 shadow border border-slate-200 dark:bg-slate-900/60 dark:border-slate-800">
+      <h1 class="text-2xl font-bold mb-2 text-indigo-600 dark:text-indigo-400">解密器（开发中）</h1>
+      <p class="text-slate-500 dark:text-slate-400 mb-6">
+        解密器仍在打磨中，暂不公开展示。敬请期待。
+      </p>
+
+      <div class="space-y-4">
+        <div class="h-10 rounded-xl bg-slate-100 dark:bg-slate-800 animate-pulse"></div>
+        <div class="h-10 rounded-xl bg-slate-100 dark:bg-slate-800 animate-pulse"></div>
+        <div class="h-10 rounded-xl bg-slate-100 dark:bg-slate-800 animate-pulse"></div>
+      </div>
+
+      <div class="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-950 dark:border-slate-800">
+        <h2 class="font-semibold text-slate-700 dark:text-slate-200 mb-2">想第一时间知道进展？</h2>
+        <p class="text-slate-500 dark:text-slate-400">
+          可关注我们的项目仓库</a>
+          获取详细说明与更新
+        </p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-6 shadow border border-slate-200 dark:bg-slate-900/60 dark:border-slate-800">
+      <h2 class="text-xl font-semibold mb-3 text-slate-700 dark:text-slate-200">公告</h2>
+      <ul class="list-disc pl-6 text-slate-600 dark:text-slate-300 space-y-2">
+        <li>解密接口与安全审计完成后将同步上线。</li>
+        <li>为避免剧透，页面暂不提供任何反向推断提示。</li>
+      </ul>
+      <div class="mt-6">
+        <a href="{{ url_for('index') }}"
+           class="inline-block px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white">
+          返回加密器
+        </a>
+      </div>
+    </div>
+  </section>
+{% endblock %}

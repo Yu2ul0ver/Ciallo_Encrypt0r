@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ title or "Ciallo Crypto Playground" }}</title>
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        if (saved === 'dark') { document.documentElement.classList.add('dark'); }
+        else { document.documentElement.classList.remove('dark'); }
+      } catch (e) {}
+    })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script> tailwind.config = { darkMode: 'class' };</script>
+
+  <style>
+    .bg-grid-fixed{
+      position:fixed; inset:0; z-index:-1; pointer-events:none;
+      background-image:
+        linear-gradient(to right, rgba(0,0,0,.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0,0,0,.05) 1px, transparent 1px);
+      background-size:24px 24px;
+    }
+    .dark .bg-grid-fixed{
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+    }
+    .cipher-block{ word-break:break-all; }
+    .line-clamp-5{ display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-100">
+  <div aria-hidden="true" class="bg-grid-fixed"></div>
+
+  <header class="sticky top-0 backdrop-blur bg-white/80 dark:bg-slate-950/70 border-b border-slate-200 dark:border-slate-800 z-10">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="{{ url_for('index') }}" class="text-xl font-extrabold tracking-wide text-indigo-600 dark:text-indigo-400">
+        🔐 Ciallo Crypto
+      </a>
+      <nav class="flex items-center gap-3 text-slate-600 dark:text-slate-300">
+        <a class="hover:text-indigo-600 dark:hover:text-indigo-400" href="{{ url_for('index') }}">加密器</a>
+        <a class="hover:text-indigo-600 dark:hover:text-indigo-400" href="{{ url_for('decryptor') }}">解密器（开发中）</a>
+        <a class="hover:text-indigo-600 dark:hover:text-indigo-400" href="{{ url_for('logs_page') }}">日志</a>
+        <a class="hover:text-indigo-600 dark:hover:text-indigo-400" href="{{ url_for('admin_login') }}">管理端</a>
+        <button id="themeToggle" class="ml-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700
+                                        bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/60 dark:hover:bg-slate-700/70
+                                        text-slate-700 dark:text-slate-200 text-sm">
+          <span class="inline dark:hidden">🌙 切换暗色</span>
+          <span class="hidden dark:inline">☀️ 切换亮色</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="max-w-3xl mx-auto px-4 mt-4 space-y-2">
+    {% for cat, msg in messages %}
+      {% set color = 'bg-emerald-100 border-emerald-400 text-emerald-700 dark:bg-emerald-600/20 dark:border-emerald-400 dark:text-emerald-200'
+                     if cat=='ok'
+                     else 'bg-rose-100 border-rose-400 text-rose-700 dark:bg-rose-600/20 dark:border-rose-400 dark:text-rose-200'
+                     if cat=='error'
+                     else 'bg-amber-100 border-amber-400 text-amber-700 dark:bg-amber-600/20 dark:border-amber-400 dark:text-amber-200' %}
+      <div class="border {{ color }} rounded-xl px-4 py-3">{{ msg }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <main class="max-w-5xl mx-auto px-4 py-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="py-10 text-center text-slate-400">
+    <p>Ciallo~(∠・ω<)⌒✨  Crafted by Yu2ul0ver</p>
+  </footer>
+
+  <script>
+    document.getElementById('themeToggle')?.addEventListener('click', function () {
+      const isDark = document.documentElement.classList.toggle('dark');
+      try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
+    });
+      function copyText(text) {
+    // 1) 现代 API（仅 HTTPS 或 localhost 可用）
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(
+        () => alert("已复制到剪贴板！"),
+        () => fallbackCopy(text)
+      );
+      return;
+    }
+    // 2) HTTP 或不支持时，用回退
+    fallbackCopy(text);
+  }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "-9999px";
+      ta.style.left = "-9999px";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length); // iOS 兼容
+
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+
+      document.body.removeChild(ta);
+      alert(ok ? "已复制到剪贴板！" : "复制失败，请手动复制");
+    }
+  </script>
+</body>
+</html>

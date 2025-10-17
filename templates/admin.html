@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1 class="text-2xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">管理面板</h1>
+
+  <div class="grid md:grid-cols-3 gap-4 mb-6">
+    <div class="rounded-2xl p-4 bg-white border border-slate-200 shadow dark:bg-slate-900/60 dark:border-slate-800">
+      <div class="text-slate-500 text-sm dark:text-slate-400">总记录</div>
+      <div class="text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">{{ stats.total }}</div>
+    </div>
+    <div class="rounded-2xl p-4 bg-white border border-slate-200 shadow dark:bg-slate-900/60 dark:border-slate-800">
+      <div class="text-slate-500 text-sm dark:text-slate-400">筛选后</div>
+      <div class="text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">{{ stats.filtered }}</div>
+    </div>
+    <div class="rounded-2xl p-4 bg-white border border-slate-200 shadow dark:bg-slate-900/60 dark:border-slate-800">
+      <div class="text-slate-500 text-sm dark:text-slate-400">页码</div>
+      <div class="text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">{{ stats.page }}/{{ stats.pages }}</div>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap gap-3 items-center mb-6">
+    <form method="get" action="{{ url_for('admin_dashboard') }}" class="flex gap-2">
+      <input name="q" value="{{ q }}" placeholder="按密文关键词筛选"
+        class="px-4 py-2 rounded-xl bg-white border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500
+               dark:bg-slate-950 dark:border-slate-800" />
+      <input type="number" min="5" max="50" name="per_page" value="{{ stats.per_page }}"
+        class="w-28 px-3 py-2 rounded-xl bg-white border border-slate-300 dark:bg-slate-950 dark:border-slate-800" />
+      <button class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700
+                     dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200">筛选</button>
+    </form>
+
+    <a href="{{ url_for('admin_export_csv') }}"
+       class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white">导出 CSV</a>
+
+    <form method="post" action="{{ url_for('admin_clear') }}"
+          onsubmit="return confirm('确定要清空所有历史记录吗？');">
+      <button class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white">清空历史</button>
+    </form>
+
+    <a href="{{ url_for('admin_logout') }}"
+       class="ml-auto px-4 py-2 rounded-xl bg-slate-300 hover:bg-slate-400 text-slate-700
+              dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-200">退出登录</a>
+  </div>
+
+  <div class="space-y-4">
+    {% if items %}
+      {% for it in items %}
+        <div class="rounded-2xl p-4 bg-white border border-slate-200 shadow dark:bg-slate-900/60 dark:border-slate-800">
+          <div class="text-sm text-slate-500 dark:text-slate-400 mb-2">
+            时间（北京时间）：{{ it.ts }}
+          </div>
+          <div class="cipher-block line-clamp-5 p-3 rounded-xl bg-slate-100 border border-slate-300
+                      dark:bg-slate-950 dark:border-slate-800">
+            <code class="block whitespace-pre-wrap break-all">{{- it.ciphertext -}}</code>
+          </div>
+          <div class="flex gap-3 mt-3">
+            <button onclick='copyText(`{{ it.ciphertext|replace("`","\\`") }}`)'
+              class="px-3 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700
+                     dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200">复制密文</button>
+            <details class="px-3 py-2 rounded-lg bg-slate-200/70 hover:bg-slate-300 text-slate-700
+                            dark:bg-slate-800/70 dark:hover:bg-slate-700 dark:text-slate-200">
+              <summary>展开/折叠</summary>
+              <div class="cipher-block p-3 mt-2 rounded-xl bg-slate-100 border border-slate-300 overflow-auto max-h-72
+                          dark:bg-slate-950 dark:border-slate-800">
+                <code class="block whitespace-pre-wrap break-all">{{- it.ciphertext -}}</code>
+              </div>
+            </details>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-slate-500 dark:text-slate-400">暂无记录。</p>
+    {% endif %}
+  </div>
+
+  {% if stats.pages > 1 %}
+  <div class="flex gap-2 justify-center mt-6">
+    {% set prev_p = stats.page - 1 %}
+    {% set next_p = stats.page + 1 %}
+    {% if stats.page > 1 %}
+      <a class="px-3 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700
+                dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200"
+         href="{{ url_for('admin_dashboard', page=prev_p, per_page=stats.per_page, q=q) }}">上一页</a>
+    {% endif %}
+    <span class="px-3 py-2 text-slate-500 dark:text-slate-400">第 {{ stats.page }} / {{ stats.pages }} 页</span>
+    {% if stats.page < stats.pages %}
+      <a class="px-3 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700
+                dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200"
+         href="{{ url_for('admin_dashboard', page=next_p, per_page=stats.per_page, q=q) }}">下一页</a>
+    {% endif %}
+  </div>
+  {% endif %}
+{% endblock %}

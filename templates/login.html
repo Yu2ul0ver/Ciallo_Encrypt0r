@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="max-w-sm mx-auto bg-white rounded-2xl p-6 shadow border border-slate-200 dark:bg-slate-900/60 dark:border-slate-800">
+    <h1 class="text-2xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">管理员登录</h1>
+    <form method="post" action="{{ url_for('admin_login_post') }}" class="space-y-4">
+      <input name="username" placeholder="管理员邮箱" required
+        class="w-full px-4 py-3 rounded-xl bg-white border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500
+               dark:bg-slate-950 dark:border-slate-800" />
+      <input type="password" name="password" placeholder="密码" required
+        class="w-full px-4 py-3 rounded-xl bg-white border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500
+               dark:bg-slate-950 dark:border-slate-800" />
+      <button type="submit"
+        class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-semibold text-white">登录</button>
+    </form>
+  </div>
+{% endblock %}

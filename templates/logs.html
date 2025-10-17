@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+  <section class="space-y-6">
+    <div class="bg-white rounded-2xl p-6 shadow border border-slate-200 dark:bg-slate-900/60 dark:border-slate-800">
+      <h1 class="text-2xl font-bold mb-2 text-indigo-600 dark:text-indigo-400">项目日志 / 历史进程</h1>
+      <p class="text-slate-500 dark:text-slate-400">
+        展示 Ciallo Crypto 项目的历次重要变更。
+      </p>
+    </div>
+
+    {% if items %}
+      <div class="bg-white rounded-2xl p-6 shadow border border-slate-200 dark:bg-slate-900/60 dark:border-slate-800">
+        <ol class="relative border-s-l border-slate-200 dark:border-slate-800 ps-6 space-y-6">
+          {% for it in items %}
+            <li class="relative">
+              <span class="absolute -start-3 top-1.5 size-2 rounded-full bg-indigo-500"></span>
+              <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">时间（北京时间）：{{ it.ts }}</div>
+              <h3 class="font-semibold text-slate-800 dark:text-slate-100">{{ it.title }}</h3>
+              {% if it.content %}
+                <p class="mt-1 text-slate-600 dark:text-slate-300 whitespace-pre-wrap">{{ it.content }}</p>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ol>
+      </div>
+    {% else %}
+      <div class="bg-white rounded-2xl p-6 shadow border border-slate-200 dark:bg-slate-900/60 dark:border-slate-800">
+        <p class="text-slate-500 dark:text-slate-400">暂无日志，请编辑 <code>data/project_logs.jsonl</code> 添加条目。</p>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}
