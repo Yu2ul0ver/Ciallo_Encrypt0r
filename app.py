@@ -28,8 +28,8 @@ CREDS_FILE = DATA_DIR / "admin_cred.json"
 flag = os.environ.get("FLAG",'flag{test_flag}')
 os.environ['FLAG'] = ''
 
-DEFAULT_ADMIN_USER = None # email
-DEFAULT_ADMIN_PASS = None # md5(the name of Repository)
+DEFAULT_ADMIN_USER = None 
+DEFAULT_ADMIN_PASS = None 
 
 
 def _ensure_creds_file():
@@ -241,3 +241,4 @@ def admin_export_csv():
 if __name__ == "__main__":
     preset()
     app.run(host='0.0.0.0', port=5000,use_reloader=False)
+
